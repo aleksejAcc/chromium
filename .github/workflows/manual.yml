@@ -25,6 +25,13 @@ jobs:
       run: |
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
         echo "export PATH=\"$HOME/depot_tools:$PATH\"" >> $GITHUB_ENV
+        source $GITHUB_ENV
+
+    - name: Install gclient
+      run: |
+        cd $HOME/depot_tools
+        ./update_depot_tools
+        source $GITHUB_ENV
 
     - name: Run hooks
       run: |
