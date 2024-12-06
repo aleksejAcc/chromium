@@ -33,10 +33,10 @@ jobs:
         ./update_depot_tools
         source $GITHUB_ENV
 
-    - name: Run hooks
-      run: |
-        gclient sync
-        gclient runhooks
+#    - name: Run hooks
+#      run: |
+#        gclient sync
+#        gclient runhooks
 
     - name: Configure build for macOS
       run: |
