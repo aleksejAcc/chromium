@@ -1,0 +1,46 @@
+name: Build Chromium for macOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install depot_tools
+      run: |
+        git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $HOME/depot_tools
+        echo "export PATH=\"$HOME/depot_tools:$PATH\"" >> $GITHUB_ENV
+
+    - name: Run hooks
+      run: |
+        gclient sync
+        gclient runhooks
+
+    - name: Configure build for macOS
+      run: |
+        gn gen out/Default --args='is_debug=false target_os="mac"'
+
+    - name: Build Chromium
+      run: |
+        ninja -C out/Default chrome
+
+    - name: Archive build output
+      uses: actions/upload-artifact@v3
+      with:
+        name: chromium-macos-build
+        path: out/Default
